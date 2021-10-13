@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,10 +24,35 @@ public class ManageCartas : MonoBehaviour
 
     int ultimoJogo = 0;                                                 // Número de tentativas do último jogo
     int recorde = 0;                                                    // Número do recorde mais recente
-   
+
+    
+    int quantidadeLinhas;
+    int quantidadeCartas = 13;
+    List<Carta> cartasEscolhidas;                                       // Lista das cartas escolhidas pelo jogador
+    List<string> tiposCartas;
+    bool alternarBack;
+    public class Carta // GameObjects das cartas selecionadas pelo jogador
+    {
+        public string Linha { get; set; } // Posição da linha da carta
+        public bool Selecionada { get; set; } // Indicador de que a carta foi selecionada
+        public GameObject GameObject { get; set; } // O GameObject atrelado à carta
+        public Carta()
+        {
+            Selecionada = false;
+        }
+
+        public void Reset()
+        {
+            Linha = string.Empty;
+            Selecionada = false;
+            GameObject = null;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        SetConfiguracao();
         MostraCartas();
         UpdateTentativas();
         somOK = GetComponent<AudioSource>();                            // Retorna o componente somOK        
@@ -36,6 +63,7 @@ public class ManageCartas : MonoBehaviour
     }
 
     // Update is called once per frame
+    /*
     void Update()
     {
         if(timerAcionado)
@@ -55,7 +83,7 @@ public class ManageCartas : MonoBehaviour
                     if(numAcertos == 13)        // Caso todas cartas sejam acertadas (Necessário mudar para outros modos de jogo com mais cartas)
                     {  
                         PlayerPrefs.SetInt("Jogadas", numTentativas);       // Define a PlayerPref "Jogadas" como a variável numTentativas
-                        if(numTentativas < recorde)                         // Se ultrapassou o recorde
+                        if(numTentativas < recorde || recorde == 0)         // Se ultrapassou o recorde. 
                         {
                             PlayerPrefs.SetInt("Recorde", numTentativas);   // Define a PlayerPref "Recorde" como a variável numTentativas
                             PlayerPrefs.SetInt("RecordeAntigo", recorde);   // Define a PlayerPref "RecordeAntigo" como a variável recorde
@@ -82,6 +110,77 @@ public class ManageCartas : MonoBehaviour
             }
         }
     }
+    */
+
+    // Update is called once per frame
+    void Update()
+    {
+        try
+        {
+            if (timerAcionado)
+            {
+                timer += Time.deltaTime;
+
+                if (timer > 0.5)
+                {
+                    timerAcionado = false;
+                    timer = 0;
+
+                    string tag = cartasEscolhidas.First().GameObject.tag;
+                    bool todasIguais = cartasEscolhidas.All(c => c.GameObject.tag == tag); // Se todas as cartas forem iguais, fica verdadeiro, ou seja, todas com a mesma tag
+
+                    foreach (var c in cartasEscolhidas)
+                    {
+                        if (todasIguais)
+                            Destroy(c.GameObject);
+                        else                        
+                            EsconderCarta(c.GameObject);
+
+                        c.Reset();
+                    }
+
+                    if (todasIguais)
+                    {
+                        numAcertos++;
+                        somOK.Play();
+                    }
+
+
+                    UpdateTentativas();
+                }
+            }
+
+            if (numAcertos == quantidadeCartas)
+            {
+                PlayerPrefs.SetInt("Jogadas", numTentativas);       // Define a PlayerPref "Jogadas" como a variável numTentativas
+                if (numTentativas < recorde || recorde == 0)         // Se ultrapassou o recorde. 
+                {
+                    PlayerPrefs.SetInt("Recorde", numTentativas);   // Define a PlayerPref "Recorde" como a variável numTentativas
+                    PlayerPrefs.SetInt("RecordeAntigo", recorde);   // Define a PlayerPref "RecordeAntigo" como a variável recorde
+                    SceneManager.LoadScene("Lab3_RecordeBatido");   // Carrega a cena "Lab3_RecordeBatido"
+                }
+                else
+                {
+                    SceneManager.LoadScene("Lab3_Fim");     // Carrega a cena "Lab3_Fim"
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            print(ex.Message);
+        }
+
+    }
+
+    void SetConfiguracao()
+    {
+        tiposCartas = RecuperaTiposCartas();
+        quantidadeLinhas = PlayerPrefs.GetInt("qtdLinhas");
+        cartasEscolhidas = CriarCartas(quantidadeLinhas);
+        alternarBack = GetAlternarBack();
+    }
+
+    /*
     void MostraCartas()
     {
         int[] arrayEmbaralhado = CriaArrayEmbaralhado();            // Cria um array de cartas embaralhadas
@@ -96,16 +195,21 @@ public class ManageCartas : MonoBehaviour
             AddUmaCarta(1, i, arrayEmbaralhado2[i]);    // Adiciona 13 cartas na linha 1 com o arrayEmbaralhado2
         }
     }
+    */
+
     void AddUmaCarta(int linha, int rank, int valor)
     {
         GameObject centro = GameObject.Find("centroDaTela");            // Utiliza o GameObject centroDaTela como ponto de referência para posicionar as cartas
         float escalaCartaOriginal = carta.transform.localScale.x;       // Captura a escala original da carta 
-        float fatorEscalaX = (650 * escalaCartaOriginal) / 110.0f;      // Multiplica a escala original por um fator X para definição do seu tamanho
-        float fatorEscalaY = (945 * escalaCartaOriginal) / 110.0f;      // Multiplica a escala original por um fator Y para definição do seu tamanho
-        
+        //float fatorEscalaX = (650 * escalaCartaOriginal) / 110.0f;      // Multiplica a escala original por um fator X para definição do seu tamanho
+        //float fatorEscalaY = (945 * escalaCartaOriginal) / 110.0f;      // Multiplica a escala original por um fator Y para definição do seu tamanho
+
+        float fatorEscalaX = (259 * escalaCartaOriginal) / 1.0f;      // Multiplica a escala original por um fator X para definição do seu tamanho
+        float fatorEscalaY = (404 * escalaCartaOriginal) / 1.0f;      // Multiplica a escala original por um fator Y para definição do seu tamanho
+
         //Vector3 novaposicao = new Vector3(centro.transform.position.x + ((rank - 13 / 2) * 1.3f), centro.transform.position.y, centro.transform.position.z);
         //Vector3 novaposicao = new Vector3(centro.transform.position.x + ((rank - 13 / 2) * fatorEscalaX), centro.transform.position.y, centro.transform.position.z); ;
-        
+
         // Define um vetor novaposicao para posicionar a carta na tela com base nos fatores de escala X e Y e o rank da carta, para espaça-lás corretamente
         Vector3 novaposicao = new Vector3(centro.transform.position.x + ((rank - 13 / 2) * fatorEscalaX), centro.transform.position.y + ((linha - 2 / 2) * fatorEscalaY), centro.transform.position.z);
         
@@ -141,10 +245,12 @@ public class ManageCartas : MonoBehaviour
             numeroCarta = "king";
         else numeroCarta = "" + (valor + 1);            // Define a variável numeroCarta para cartas numéricas
                                                         // (neste caso, as cartas têm seus valores reais iguais aos da array)
-        if(linha == 0)
+
+        if (linha == 0)
             nomeDaCarta = numeroCarta + "_of_clubs";    // Define as cartas da linha 0 como o naipe paus (clubs)
         else if (linha == 1)
             nomeDaCarta = numeroCarta + "_of_hearts";   // Define as cartas da linha 1 como naipe copas (hearts)
+
 
         Sprite s1 = (Sprite)(Resources.Load<Sprite>(nomeDaCarta));  // Define a sprite para as cartas com base no nome da varia´vel nomeDaCarta
                                                                     // (que bate com os nomes das sprites em resources)
@@ -154,6 +260,7 @@ public class ManageCartas : MonoBehaviour
         GameObject.Find("" + linha + "_" + valor).GetComponent<Tile>().SetCartaOriginal(s1);    // Encontra o GameObject relacionado com a carta definida anteriormente
     }
 
+    /*
     public int[] CriaArrayEmbaralhado()                                                 // Cria um array embaralhado
     {
         int[] novoArray = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};        // Cria um array com 13 números
@@ -161,13 +268,15 @@ public class ManageCartas : MonoBehaviour
         for (int t = 0; t < 13; t++)                                                    // Para cada valor do array
         {
             temp = novoArray[t];                                                        // Define o valor temp como o valor atual do array
-            int r = Random.Range(t, 13);                                                // Define uma variável r como um valor aleatório indo de t até 13
+            int r = UnityEngine.Random.Range(t, 13);                                                // Define uma variável r como um valor aleatório indo de t até 13
             novoArray[t] = novoArray[r];                                                // Troca a posição t com a posição r   
             novoArray[r] = temp;                                                        // Define a posição r como o inteiro temp
         }
         return novoArray;                                                               // Retorna o novoArray
     }
-
+    */
+    
+    /*
     public void CartaSelecionada(GameObject carta)          // Função utilizada ao clicar na carta/tile                                
     {
         if(!primeiraCartaSelecionada)                       // Caso exista uma primeira carta selecionada
@@ -186,6 +295,7 @@ public class ManageCartas : MonoBehaviour
             VerificaCartas();                               // Chama a função que VerificaCartas
         }
     }
+    */
 
     public void VerificaCartas()                            // Dispara o timer e atualizas as tentativas
     {
@@ -204,5 +314,191 @@ public class ManageCartas : MonoBehaviour
     {
         // Encontra o GameObject "numTentativas" e atualiza ele com base na variável numTentativas
         GameObject.Find("numTentativas").GetComponent<Text>().text = "Tentativas: " + numTentativas;        
+    }
+
+    /* Novos metodos - Refactory */
+
+    List<string> RecuperaTiposCartas()
+    {
+        List<string> tipos = new List<string>();
+
+        int total = PlayerPrefs.GetInt("qtdTipos");
+
+        for (int i = 0; i < total; i++)
+        {
+            string tipo = PlayerPrefs.GetString("tipo" + i);
+            tipos.Add(tipo);
+        }
+
+        return tipos;
+    }
+
+    // Cria a lista para armazenar as cartas que serão selecionadas pelo jogador
+    List<Carta> CriarCartas(int total)
+    {
+        List<Carta> cartas = new List<Carta>();
+
+        for (int i = 0; i < total; i++)
+            cartas.Add(new Carta());
+
+        return cartas;
+    }
+
+    void MostraCartas()
+    {
+        List<int[]> cartasEmbaralhadas = CriarCartasEmbaralhadas();
+
+        for (int i = 0; i < quantidadeLinhas; i++)
+        {
+            for (int j = 0; j < quantidadeCartas; j++)
+                AdicionarUmaCarta(i, j, cartasEmbaralhadas[i][j]);
+        }
+    }
+
+    void EsconderCarta(GameObject carta)
+    {
+        if (alternarBack)
+        {
+            string linha = carta.name.Substring(0, 1);
+            int numeroLinha = Convert.ToInt32(linha);
+
+            if (numeroLinha % 2 == 1)
+                carta.GetComponent<Tile>().EscondeCarta("blue");
+            else
+                carta.GetComponent<Tile>().EscondeCarta("red");
+            
+            return;
+        }
+
+        carta.GetComponent<Tile>().EscondeCarta();
+    }
+
+    bool GetAlternarBack()
+    {
+        int alterna = PlayerPrefs.GetInt("alternarBack");
+
+        if (alterna == 0)
+            return false;
+
+        return true;
+    }
+
+    // Cria o conjunto de cartas para cada linha que será apresentada
+    List<int[]> CriarCartasEmbaralhadas()
+    {
+        List<int[]> cartas = new List<int[]>();
+        for (int i = 0; i < quantidadeLinhas; i++)
+            cartas.Add(CriarArrayEmbaralhado());
+
+        return cartas;
+    }
+
+    int[] CriarArrayEmbaralhado()
+    {
+        int[] novoArray = Enumerable.Range(0, quantidadeCartas).ToArray();
+        for (int i = 0; i < quantidadeCartas; i++)
+        {
+            int temp = novoArray[i];
+            int r = UnityEngine.Random.Range(i, quantidadeCartas - 1);
+            novoArray[i] = novoArray[r];
+            novoArray[r] = temp;
+        }
+
+        return novoArray;
+    }
+
+    // Estabelece a carta do baralho que será mostrada quando o jogador clicar nela
+    void AdicionarUmaCarta(int linha, int rank, int valor)
+    {
+        GameObject c = ClonarCarta(linha, rank, valor);
+
+        string nomeCarta = GetNomeCarta(linha, valor);
+
+        Sprite s = Resources.Load<Sprite>(nomeCarta);
+        GameObject.Find(c.name).GetComponent<Tile>().SetCartaOriginal(s);
+        EsconderCarta(c);
+    }
+
+    // Cria um clone do Prefab Tile, para mostrar diversas cartas na Scene
+    GameObject ClonarCarta(int linha, int rank, int valor)
+    {
+        Vector3 novaPosicao = GetPosicaoClone(linha, rank);
+
+        GameObject c = Instantiate(carta, novaPosicao, Quaternion.identity);
+        c.tag = valor.ToString();
+        c.name = linha + "_" + rank + "_" + valor;
+
+        return c;
+    }
+
+    // Calcula a posição que carta ficará na Scene 
+    Vector3 GetPosicaoClone(int linha, int indice)
+    {
+        float escalaX = carta.transform.localScale.x;
+        float escalaY = carta.transform.localScale.y;
+
+        float fatorEscalaX = (400 * escalaX) / 130.0f;
+        float fatorEscalaY = (600 * escalaY) / 130.0f;
+
+        float deslocamentoX = (indice - (quantidadeCartas / 2)) * fatorEscalaX;
+        float deslocamentoY = (linha - (quantidadeLinhas / 2)) * fatorEscalaY;
+
+        GameObject centro = GameObject.Find("centroDaTela");
+        float posX = centro.transform.position.x + deslocamentoX;
+        float posY = centro.transform.position.y + deslocamentoY;
+
+        return new Vector3(posX, posY, 0);
+    }
+
+    // Recupera o nome da carta pelo o valor atribuído à ela
+    string GetNomeCarta(int linha, int valor)
+    {
+        string numeroCarta;
+
+        if (valor == 0)
+            numeroCarta = "ace";
+        else if (valor == 10)
+            numeroCarta = "jack";
+        else if (valor == 11)
+            numeroCarta = "queen";
+        else if (valor == 12)
+            numeroCarta = "king";
+        else
+            numeroCarta = (valor + 1).ToString();
+
+        return numeroCarta + tiposCartas[linha];
+    }
+
+    public void CartaSelecionada(GameObject carta)
+    {
+        if (!CartaValida(carta)) return;
+
+        int qtdCartasEscolhidas = 0;
+        foreach (var escolhida in cartasEscolhidas)
+        {
+            qtdCartasEscolhidas += 1;
+            if (!escolhida.Selecionada)
+            {
+                escolhida.Selecionada = true;
+                escolhida.Linha = carta.name.Substring(0, 1);
+                escolhida.GameObject = carta;
+                escolhida.GameObject.GetComponent<Tile>().RevelaCarta();
+                break;
+            }
+        }
+
+        if (qtdCartasEscolhidas == cartasEscolhidas.Count)
+            VerificaCartas();
+    }
+
+    // Valida se a carta escolhida pelo jogador é válida de entrar na lista das escolhidas
+    // O nome dela deve ser diferente das que já existem e não pode ser escolhida após ter escolhido o par
+    bool CartaValida(GameObject carta)
+    {
+        if (cartasEscolhidas == null || carta == null) return false;
+
+        var cartasSelecionadas = cartasEscolhidas.Where(c => c.GameObject != null).ToList();
+
+        return cartasSelecionadas.All(c => c.GameObject.name != carta.name) && !timerAcionado;
     }
 }

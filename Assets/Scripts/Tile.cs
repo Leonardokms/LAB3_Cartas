@@ -9,11 +9,14 @@ public class Tile : MonoBehaviour
     public Sprite backCarta;                // Sprite do avesso da carta    
     //public Sprite novaCarta;    // Update da Carta
 
+    public Sprite backCartaVermelha;                // Sprite do avesso da carta vermelha
+    public Sprite backCartaAzul;                // Sprite do avesso da carta azul
+
 
     // Start is called before the first frame update
     void Start()
     {
-        EscondeCarta();                  // Inicia todas as cartas como escondidas
+        // EscondeCarta();                  // Inicia todas as cartas como escondidas
     }
 
     // Update is called once per frame
@@ -39,8 +42,13 @@ public class Tile : MonoBehaviour
         GameObject.Find("gameManager").GetComponent<ManageCartas>().CartaSelecionada(gameObject);       
          
     }
-    public void EscondeCarta()                                  // Define a sprite e a variável tileRevelada para virar a carta de costas
+    public void EscondeCarta(string cor = "red")                                  // Define a sprite e a variável tileRevelada para virar a carta de costas
     {
+        if (cor == "red")
+            backCarta = backCartaVermelha;
+        else if (cor == "blue")
+            backCarta = backCartaAzul;
+
         GetComponent<SpriteRenderer>().sprite = backCarta;      // Define a sprite como a parte de trás da carta
         tileRevelada = false;                                   // Define a variável tileRevelada como false
     }

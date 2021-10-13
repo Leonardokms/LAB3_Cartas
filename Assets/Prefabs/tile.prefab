@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 830410181150948720}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.1558034, y: 0.77208155, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 1}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -73,12 +73,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 8fc92f9c7c8fab848ac6575bc5e923e7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6e05cf75e94d821439ff77a4693f76a6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2.59, y: 4.04}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -98,7 +98,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   originalCarta: {fileID: 21300000, guid: 2679ba126d2d32a4eb33ce2a4bb00aba, type: 3}
   backCarta: {fileID: 21300000, guid: 8f5c00114e5a64843bdb41f9dd3f5069, type: 3}
-  novaCarta: {fileID: 0}
+  backCartaVermelha: {fileID: 21300000, guid: 8d1f32f380cb2b54bb09a0b5c8f27548, type: 3}
+  backCartaAzul: {fileID: 21300000, guid: 248bc9d1ccca0894aaf2a9253bf337e3, type: 3}
 --- !u!61 &830410181150948724
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -116,12 +117,12 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 5, y: 7.26}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 2.59, y: 4.04}
+    newSize: {x: 2.59, y: 4.04}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 5, y: 7.2}
+  m_Size: {x: 2.5, y: 4}
   m_EdgeRadius: 0

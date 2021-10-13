@@ -19,6 +19,12 @@ public class ManageBotoes : MonoBehaviour
     public void StartJogo()
     {
         SceneManager.LoadScene("Lab3");       // Carrega a cena "Lab3"
+        GameObject.Find("manageConfig").GetComponent<ManageConfigs>().SetSettings();
+    }
+
+    public void RestartJogo()
+    {
+        SceneManager.LoadScene("Lab3_Inicio");       // Carrega a cena "Lab3_Inicio"
     }
 
     public void FimJogo()

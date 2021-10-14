@@ -42,7 +42,7 @@ public class Tile : MonoBehaviour
         GameObject.Find("gameManager").GetComponent<ManageCartas>().CartaSelecionada(gameObject);       
          
     }
-    public void EscondeCarta(string cor = "red")                                  // Define a sprite e a variável tileRevelada para virar a carta de costas
+    public void EscondeCarta(string cor = "red")               // Define a sprite e a variável tileRevelada para virar a carta de costas
     {
         if (cor == "red")
             backCarta = backCartaVermelha;

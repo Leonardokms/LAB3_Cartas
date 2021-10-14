@@ -20,11 +20,7 @@ public class ManageConfigs : MonoBehaviour
 
     }
 
-    public List<string> GetTiposCartas()
-    {
-        return tiposCartasParaLinhas;
-    }
-
+    // Recupera qual foi a opção selecionada pelo jogador e define as configurações que serão utilizadas no jogo
     public void SetSettings()
     {
         Toggle toggle = GameObject.Find("groupConfigs")
@@ -44,6 +40,7 @@ public class ManageConfigs : MonoBehaviour
         SetTiposCartas(tiposCartasParaLinhas);
     }
 
+    // Configuração que mostrará apenas cartas pretas no jogo, mostrando duas linhas sem alternância do tipo da traseira da carta
     void ConfigPretas()
     {
         tiposCartasParaLinhas.Add("_of_clubs");
@@ -54,6 +51,7 @@ public class ManageConfigs : MonoBehaviour
         PlayerPrefs.SetInt("alternarBack", 0);
     }
 
+    // Configuração que mostrará apenas cartas vermelhas no jogo, mostrando duas linhas sem alternância do tipo da traseira da carta
     void ConfigVermelhas()
     {
         tiposCartasParaLinhas.Add("_of_hearts");
@@ -64,6 +62,8 @@ public class ManageConfigs : MonoBehaviour
         PlayerPrefs.SetInt("alternarBack", 0);
     }
 
+    // Configuração que mostrará as cartas pretas e vermelhas no jogo, mostrando duas linhas e com alternância do tipo da traseira da carta
+    // Uma linha com traseira azul e outra com traseira vermelha
     void ConfigDoisBaralhos()
     {
         tiposCartasParaLinhas.Add("_of_clubs");
@@ -74,6 +74,7 @@ public class ManageConfigs : MonoBehaviour
         PlayerPrefs.SetInt("alternarBack", 1);
     }
 
+    // Configuração com todas as cartas. Será mostrado 4 linhas e todos com a mesma traseira
     void ConfigTodasCartas()
     {
         tiposCartasParaLinhas.Add("_of_hearts");
@@ -86,11 +87,13 @@ public class ManageConfigs : MonoBehaviour
         PlayerPrefs.SetInt("alternarBack", 0);
     }
 
-
+    // Método para armazenar a quantidade de linhas que será mostrada no jogo
     void SetQuantidadeLinhas(int total)
     {
         PlayerPrefs.SetInt("qtdLinhas", total);
     }
+
+    // Armazena os tipos das cartas que serão utilizadas no jogo, como hearts, clubs etc
     void SetTiposCartas(List<string> tiposCartas)
     {
         PlayerPrefs.SetInt("qtdTipos", tiposCartas.Count);

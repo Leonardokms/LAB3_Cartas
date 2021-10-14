@@ -19,7 +19,7 @@ public class ManageBotoes : MonoBehaviour
     public void StartJogo()
     {
         SceneManager.LoadScene("Lab3");       // Carrega a cena "Lab3"
-        GameObject.Find("manageConfig").GetComponent<ManageConfigs>().SetSettings();
+        GameObject.Find("manageConfig").GetComponent<ManageConfigs>().SetSettings(); // Antes de inciar o jogo, configura a opção escolhida pelo jogador
     }
 
     public void RestartJogo()
@@ -30,6 +30,11 @@ public class ManageBotoes : MonoBehaviour
     public void FimJogo()
     {
         SceneManager.LoadScene("Lab3_Fim");     // Carrega a cena "Lab3_Fim"
+    }
+
+    public void MenuJogo()
+    {
+        SceneManager.LoadScene("Lab3_Inicio");     // Carrega a cena "Lab3_Inicio"
     }
     
 }
